@@ -12,6 +12,7 @@ async function main() {
       create: customer,
     });
   }
+
   console.log(`Created ${customers.length} customers`);
 }
 
