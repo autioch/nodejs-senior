@@ -43,7 +43,7 @@ export class CustomerService {
     });
 
     if (!customer) {
-      throw new NotFoundException('Record to delete does not exist.');
+      throw new NotFoundException('User not found.');
     }
 
     return this.prisma.customer.delete({ where: { id } });

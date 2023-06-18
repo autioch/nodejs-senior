@@ -23,10 +23,10 @@ export class GetCustomerInput {
   cursor?: Prisma.CustomerWhereUniqueInput;
 
   @Field(() => Int, { nullable: true })
-  skip: number;
+  skip?: number;
 
   @Field(() => Int, { nullable: true })
-  take: number;
+  take?: number;
 
   @Field(() => WhereCustomerInput, { nullable: true })
   where: WhereCustomerInput;
@@ -41,7 +41,7 @@ export class CreateCustomerInput {
   password: string;
 
   @Field(() => String, { nullable: true })
-  role: string;
+  role: ROLE;
 }
 
 @InputType()
