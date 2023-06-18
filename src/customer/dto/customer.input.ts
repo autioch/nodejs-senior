@@ -1,5 +1,6 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
+import { ROLE } from 'src/consts';
 
 @InputType()
 export class WhereCustomerInput {
@@ -29,4 +30,37 @@ export class GetCustomerInput {
 
   @Field(() => WhereCustomerInput, { nullable: true })
   where: WhereCustomerInput;
+}
+
+@InputType()
+export class CreateCustomerInput {
+  @Field(() => String, { nullable: true })
+  email: string;
+
+  @Field(() => String, { nullable: true })
+  password: string;
+
+  @Field(() => String, { nullable: true })
+  role: string;
+}
+
+@InputType()
+export class UpdateCustomerInput {
+  @Field(() => String, { nullable: true })
+  id: string;
+
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
+
+  @Field(() => String, { nullable: true })
+  role?: ROLE;
+}
+
+@InputType()
+export class DeleteCustomerInput {
+  @Field(() => String, { nullable: true })
+  id: string;
 }
