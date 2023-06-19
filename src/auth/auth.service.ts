@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { compareSync } from 'bcrypt';
+import { compareSync, hash } from 'bcrypt';
+import { ROLE } from 'src/consts';
 import { Customer } from 'src/lib/entities/customer.entity';
 
 import { CustomerService } from '../customer/customer.service';
+import { SignUpDto } from './dto/auth.input';
 
 export interface SignInResponse {
   accessToken: string;
@@ -16,6 +18,27 @@ export class AuthService {
     private customerService: CustomerService,
     private jwtService: JwtService,
   ) {}
+
+  async signUp(input: SignUpDto): Promise<SignInResponse> {
+    const { email, password } = input;
+    const hashedPassword = await hash(password, 10);
+
+    const existingCustomer = await this.customerService.findOne({
+      where: { email },
+    });
+
+    if (existingCustomer) {
+      throw new Error('Email already in use');
+    }
+
+    const customer = await this.customerService.create({
+      email,
+      password: hashedPassword,
+      role: ROLE.User,
+    });
+
+    return this.generateTokens(customer);
+  }
 
   async signIn(email: string, password: string): Promise<SignInResponse> {
     const customer = await this.customerService.findOne({

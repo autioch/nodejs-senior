@@ -16,7 +16,9 @@ model Customer {
   email         String   @unique
   password      String
   role          Role     @default(USER)
-  refreshToken  String?  // todo separate table?
+  refreshToken  String?
+  verified      Boolean  @default(false)
+  verifyCode    String?   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
