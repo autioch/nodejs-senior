@@ -28,7 +28,7 @@ export class AuthService {
     });
 
     if (existingCustomer) {
-      throw new Error('Email already in use');
+      throw new Error('An account with specified email already exists.');
     }
 
     const customer = await this.customerService.create({
