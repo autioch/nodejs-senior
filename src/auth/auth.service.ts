@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync, hash } from 'bcrypt';
+import crypto from 'crypto';
 import { ROLE } from 'src/consts';
 import { Customer } from 'src/lib/entities/customer.entity';
 
@@ -21,7 +22,6 @@ export class AuthService {
 
   async signUp(input: SignUpDto): Promise<SignInResponse> {
     const { email, password } = input;
-    const hashedPassword = await hash(password, 10);
 
     const existingCustomer = await this.customerService.findOne({
       where: { email },
@@ -31,10 +31,12 @@ export class AuthService {
       throw new Error('An account with specified email already exists.');
     }
 
+    const hashedPassword = await hash(password, 10);
     const customer = await this.customerService.create({
       email,
       password: hashedPassword,
       role: ROLE.User,
+      verifyCode: crypto.randomBytes(4).toString('hex'),
     });
 
     return this.generateTokens(customer);
@@ -59,7 +61,8 @@ export class AuthService {
         email: customer.email,
       },
       {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRE,
       },
     );
     const refreshToken = await this.jwtService.signAsync(
@@ -67,7 +70,8 @@ export class AuthService {
         sub: customer.id,
       },
       {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_REFRESH_TOKEN_SECRET,
+        expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE,
       },
     );
 

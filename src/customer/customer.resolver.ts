@@ -9,6 +9,7 @@ import {
   DeleteCustomerInput,
   GetCustomerInput,
   UpdateCustomerInput,
+  VerifyCustomerInput,
 } from './dto/customer.input';
 
 @Resolver(() => Customer)
@@ -53,5 +54,12 @@ export class CustomerResolver {
     @Args('input') input: DeleteCustomerInput,
   ): Promise<Customer | null> {
     return this.customerService.delete(input);
+  }
+
+  @Mutation(() => Customer)
+  verifyCustomer(
+    @Args('verifyCustomerInput') verifyCustomerInput: VerifyCustomerInput,
+  ) {
+    return this.customerService.verifyCustomer(verifyCustomerInput);
   }
 }

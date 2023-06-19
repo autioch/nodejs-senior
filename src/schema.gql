@@ -42,12 +42,16 @@ type Mutation {
   createCustomer(input: CreateCustomerInput!): Customer!
   updateCustomer(input: UpdateCustomerInput!): Customer!
   deleteCustomer(input: DeleteCustomerInput!): Customer!
+  verifyCustomer(verifyCustomerInput: VerifyCustomerInput!): Customer!
 }
 
 input CreateCustomerInput {
   email: String
   password: String
   role: String
+  refreshToken: String
+  verified: Boolean
+  verifyCode: String
 }
 
 input UpdateCustomerInput {
@@ -55,8 +59,16 @@ input UpdateCustomerInput {
   email: String
   password: String
   role: String
+  refreshToken: String
+  verified: Boolean
+  verifyCode: String
 }
 
 input DeleteCustomerInput {
   id: String
+}
+
+input VerifyCustomerInput {
+  email: String!
+  verifyCode: String!
 }

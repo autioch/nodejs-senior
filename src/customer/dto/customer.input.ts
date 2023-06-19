@@ -42,6 +42,15 @@ export class CreateCustomerInput {
 
   @Field(() => String, { nullable: true })
   role: ROLE;
+
+  @Field(() => String, { nullable: true })
+  refreshToken?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  verified?: boolean;
+
+  @Field(() => String, { nullable: true })
+  verifyCode?: string;
 }
 
 @InputType()
@@ -57,10 +66,28 @@ export class UpdateCustomerInput {
 
   @Field(() => String, { nullable: true })
   role?: ROLE;
+
+  @Field(() => String, { nullable: true })
+  refreshToken?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  verified?: boolean;
+
+  @Field(() => String, { nullable: true })
+  verifyCode?: string;
 }
 
 @InputType()
 export class DeleteCustomerInput {
   @Field(() => String, { nullable: true })
   id: string;
+}
+
+@InputType()
+export class VerifyCustomerInput {
+  @Field(() => String)
+  email?: string;
+
+  @Field(() => String)
+  verifyCode?: string;
 }
