@@ -28,6 +28,7 @@ module.exports = {
     'no-console': 'off',
     'id-denylist': 'off',
     'no-shadow': 'off',
+    'no-undefined': 'off',
     'no-magic-numbers': 'off',
     'max-lines-per-function': 'off',
     'class-methods-use-this': 'off',

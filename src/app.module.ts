@@ -5,6 +5,7 @@ import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { CustomerModule } from './customer/customer.module';
 import { PrismaService } from './prisma.service';
 
@@ -21,6 +22,7 @@ import { PrismaService } from './prisma.service';
       playground: true,
       introspection: true, // TODO update this so that it's off in production;
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

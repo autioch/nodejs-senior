@@ -8,5 +8,6 @@ import { CustomerService } from './customer.service';
   imports: [],
   controllers: [],
   providers: [CustomerService, PrismaService, CustomerResolver],
+  exports: [CustomerService],
 })
 export class CustomerModule {}
