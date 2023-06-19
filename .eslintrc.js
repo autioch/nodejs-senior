@@ -7,6 +7,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
+    'qb',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
@@ -21,5 +22,18 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'new-cap': 'off',
+    'no-await-in-loop': 'off',
+    'no-useless-constructor': 'off',
+    'no-console': 'off',
+    'id-denylist': 'off',
+    'no-shadow': 'off',
+    'no-undefined': 'off',
+    'no-magic-numbers': 'off',
+    'max-lines-per-function': 'off',
+    'class-methods-use-this': 'off',
+    'max-classes-per-file': 'off',
+    'id-length': 'off',
+    'require-await': 'off'
   },
 };
