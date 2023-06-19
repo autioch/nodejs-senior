@@ -12,7 +12,8 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "lint": "eslint \"{src,apps,libs,test,prisma}/**/*.ts\" --fix",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

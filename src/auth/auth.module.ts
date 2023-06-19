@@ -6,6 +6,7 @@ import { CustomerModule } from '../customer/customer.module';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { TokenService } from './token.service';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthService } from './auth.service';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    TokenService,
   ],
   controllers: [AuthController],
   exports: [AuthService],

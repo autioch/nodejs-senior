@@ -1,8 +1,8 @@
 import { ConflictException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Customer } from 'lib/entities/customer.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 
+import { Customer } from '../lib/entities/customer.entity';
 import { CustomerService } from './customer.service';
 import {
   CreateCustomerInput,

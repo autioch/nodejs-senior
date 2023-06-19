@@ -1,26 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync, hash } from 'bcrypt';
-import crypto from 'crypto';
+import { randomBytes } from 'crypto';
 import { ROLE } from 'src/consts';
-import { Customer } from 'src/lib/entities/customer.entity';
 
 import { CustomerService } from '../customer/customer.service';
 import { SignUpDto } from './dto/auth.input';
-
-export interface SignInResponse {
-  accessToken: string;
-  refreshToken: string;
-}
+import { RefreshToken, Tokens, TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private customerService: CustomerService,
     private jwtService: JwtService,
+    private tokenService: TokenService,
   ) {}
 
-  async signUp(input: SignUpDto): Promise<SignInResponse> {
+  async signUp(input: SignUpDto): Promise<Tokens> {
     const { email, password } = input;
 
     const existingCustomer = await this.customerService.findOne({
@@ -36,45 +37,49 @@ export class AuthService {
       email,
       password: hashedPassword,
       role: ROLE.User,
-      verifyCode: crypto.randomBytes(4).toString('hex'),
+      verifyCode: randomBytes(4).toString('hex'),
     });
 
-    return this.generateTokens(customer);
+    return this.tokenService.generateTokens(customer);
   }
 
-  async signIn(email: string, password: string): Promise<SignInResponse> {
+  async signIn(email: string, password: string): Promise<Tokens> {
     const customer = await this.customerService.findOne({
       where: { email },
     });
 
-    if (!customer || compareSync(password, customer.password)) {
+    if (
+      !customer ||
+      !customer.verified ||
+      !compareSync(password, customer.password)
+    ) {
       throw new NotFoundException('Invalid credentials');
     }
 
-    return this.generateTokens(customer);
+    return this.tokenService.generateTokens(customer);
   }
 
-  async generateTokens(customer: Customer): Promise<any> {
-    const accessToken = await this.jwtService.signAsync(
-      {
-        sub: customer.id,
-        email: customer.email,
-      },
-      {
-        secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRE,
-      },
-    );
-    const refreshToken = await this.jwtService.signAsync(
-      {
-        sub: customer.id,
-      },
-      {
-        secret: process.env.JWT_REFRESH_TOKEN_SECRET,
-        expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE,
-      },
-    );
+  async refreshToken(refreshToken: string): Promise<Tokens> {
+    let customer;
 
-    return { accessToken, refreshToken };
+    try {
+      const payload = await this.tokenService.verifyToken(refreshToken);
+
+      customer = await this.customerService.findOne({
+        where: { id: payload.sub },
+      });
+    } catch (err) {
+      throw new UnauthorizedException('Token error');
+    }
+
+    if (!customer) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (!customer.verified) {
+      throw new NotAcceptableException('User not verified');
+    }
+
+    return this.tokenService.generateTokens(customer);
   }
 }
